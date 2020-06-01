@@ -49,6 +49,10 @@ const { argv } = yargs
   .option('print-requests', {
     describe: 'Print basic request info',
   })
+  .option('b', {
+    alias: 'bearer',
+    describe: 'Bearer token for authorization'
+  })
   .require('port')
   .boolean('local-https')
   .boolean('allow-invalid-cert')
@@ -63,6 +67,7 @@ if (typeof argv.port !== 'number') {
 }
 
 (async () => {
+  const env_bearer = process.env.KT_BEARER;
   const tunnel = await localtunnel({
     port: argv.port,
     host: argv.host,
@@ -72,6 +77,7 @@ if (typeof argv.port !== 'number') {
     local_cert: argv.localCert,
     local_key: argv.localKey,
     local_ca: argv.localCa,
+    bearer: env_bearer || argv.bearer,
     allow_invalid_cert: argv.allowInvalidCert,
   }).catch(err => {
     throw err;
